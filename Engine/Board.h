@@ -16,6 +16,7 @@ public:
 	bool CheckForObstacle(const Location& loc) const;
 	void AddObstacle(std::mt19937 & rng, const class Snake & snake);
 	void DrawObstacles();
+	void DrawPoison();
 private:
 	static constexpr int cellDim = 20;		// Pixels
 	static constexpr int cellPadding = 1;	// Pixels
@@ -28,5 +29,10 @@ private:
 	static constexpr Color borderColor = Colors::Blue;
 	static constexpr Color obstacleColor = Colors::Gray;
 	bool hasObstacle[width * height] = { false };
+	int boardCells[width * height] = { 0 }; // 0 = Blank, 1 = Goal, 2 = Poison, 3 = Obstacle
+	int nGoals = 10;
+	int nPoison = (width * height) / 3;
+	//Color poisonColor = Colors::Magenta;
+	Color poisonColor = Color(58, 0, 58);
 	Graphics& gfx;
 };

@@ -12,6 +12,21 @@ Board::Board(Graphics& in_gfx)
 	:
 	gfx(in_gfx)
 {
+	std::mt19937 rng;
+	std::uniform_int_distribution<int> xDist(0, width - 1);
+	std::uniform_int_distribution<int> yDist(0, height - 1);
+
+	Location loc;
+	do {
+		loc.x = xDist(rng);
+		loc.y = yDist(rng);
+
+		if (boardCells[loc.y * width + loc.x] == 0) // if cell is empty
+		{
+			boardCells[loc.y * width + loc.x] = 2; // insert poison
+			nPoison--;
+		}
+	} while (nPoison > 0);
 }
 
 void Board::DrawCell(const Location& loc, Color c)
@@ -109,3 +124,18 @@ void Board::DrawObstacles()
 		}
 	}
 }
+
+void Board::DrawPoison()
+{
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			if (boardCells[y * width + x] == 2)
+			{
+				DrawCell({ x, y }, poisonColor);
+			}
+		}
+	}
+}
+

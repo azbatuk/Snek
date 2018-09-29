@@ -116,6 +116,7 @@ void Game::ComposeFrame()
 {
 	if (gameIsStarted)
 	{
+		brd.DrawPoison();
 		snek.Draw(brd);
 		goal.Draw(brd);
 		//obs.Draw(brd);
