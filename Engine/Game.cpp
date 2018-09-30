@@ -29,7 +29,6 @@ Game::Game( MainWindow& wnd )
 	brd(gfx),
 	rng(std::random_device()()),
 	snek({2 ,2}),
-	//goal(rng, brd, snek, obs)
 	goal(rng, brd, snek)
 {
 }
@@ -72,13 +71,23 @@ void Game::UpdateModel()
 			{
 				snekMoveCounter = 0;
 				const Location nextLoc = snek.GetNextHeadLocation(delta_loc);
-				//if (!brd.IsInsideBoard(nextLoc) || snek.IsInTileExceptEnd(nextLoc) || obs.IsObstacleHit(nextLoc))
 				if (!brd.IsInsideBoard(nextLoc) || snek.IsInTileExceptEnd(nextLoc) || brd.CheckForObstacle(nextLoc))
 				{
 					gameIsOver = true;
 				}
 				else
 				{
+					if (brd.CheckForPoison(nextLoc))
+					{
+						// eating poison
+						brd.EatPoison(nextLoc);
+
+						/* 
+						:azb:to do:
+						Increase Snek's speed when poison is eaten.
+						*/
+					}
+
 					const bool eating = nextLoc == goal.GetLocation();
 					if (eating)
 					{
@@ -87,9 +96,7 @@ void Game::UpdateModel()
 					snek.MoveBy(delta_loc);
 					if (eating)
 					{
-						//obs.AddObstacle(rng, brd, snek);
 						brd.AddObstacle(rng, snek);
-						//goal.Respawn(rng, brd, snek, obs);
 						goal.Respawn(rng, brd, snek);
 						score.AddScore();
 					}
@@ -116,11 +123,11 @@ void Game::ComposeFrame()
 {
 	if (gameIsStarted)
 	{
-		brd.DrawPoison();
+		//brd.DrawPoison();
+		//brd.DrawObstacles();
+		brd.DrawBoard();
 		snek.Draw(brd);
 		goal.Draw(brd);
-		//obs.Draw(brd);
-		brd.DrawObstacles();
 		score.Draw(brd);
 
 		if (gameIsOver)

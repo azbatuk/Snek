@@ -92,7 +92,13 @@ void Board::DrawScore(const int x, const int y, const int scoreWidth, const int 
 bool Board::CheckForObstacle(const Location & loc) const
 {
 	// Map 2D screen array to 1D hasObstacle array (Row Major) to get the correct array index
-	return hasObstacle[loc.y * width + loc.x]; 
+	//return hasObstacle[loc.y * width + loc.x]; 
+	return boardCells[loc.y * width + loc.x] == 3; // 3 = Obstacle
+}
+
+bool Board::CheckForPoison(const Location & loc) const
+{
+	return boardCells[loc.y * width + loc.x] == 2; // 2 = Poison
 }
 
 void Board::AddObstacle(std::mt19937 & rng, const Snake & snake)
@@ -105,35 +111,60 @@ void Board::AddObstacle(std::mt19937 & rng, const Snake & snake)
 		newLoc.x = xDist(rng);
 		newLoc.y = yDist(rng);
 
-	} while (CheckForObstacle(newLoc) || snake.IsInTile(newLoc));
+	} while (CheckForObstacle(newLoc) || CheckForPoison(newLoc) || snake.IsInTile(newLoc));
+	//} while (CheckForObstacle(newLoc) || snake.IsInTile(newLoc));
 
 	// Map 2D screen array to 1D hasObstacle array (Row Major) to get the correct array index
-	hasObstacle[newLoc.y * width + newLoc.x] = true;
+	//hasObstacle[newLoc.y * width + newLoc.x] = true;
+	boardCells[newLoc.y * width + newLoc.x] = 3; // 3 = Obstacle
 }
 
-void Board::DrawObstacles()
+void Board::EatPoison(const Location & loc)
+{
+	boardCells[loc.y * width + loc.x] = 0; // 0 = Empty
+}
+
+//void Board::DrawObstacles()
+//{
+//	for (int y = 0; y < height; y++)
+//	{
+//		for (int x = 0; x < width; x++)
+//		{
+//			if (CheckForObstacle({x, y}))
+//			{
+//				DrawCell({x, y}, obstacleColor);
+//			}
+//		}
+//	}
+//}
+//
+//void Board::DrawPoison()
+//{
+//	for (int y = 0; y < height; y++)
+//	{
+//		for (int x = 0; x < width; x++)
+//		{
+//			if (boardCells[y * width + x] == 2)
+//			{
+//				DrawCell({ x, y }, poisonColor);
+//			}
+//		}
+//	}
+//}
+
+void Board::DrawBoard()
 {
 	for (int y = 0; y < height; y++)
 	{
 		for (int x = 0; x < width; x++)
 		{
-			if (CheckForObstacle({x, y}))
-			{
-				DrawCell({x, y}, obstacleColor);
-			}
-		}
-	}
-}
-
-void Board::DrawPoison()
-{
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			if (boardCells[y * width + x] == 2)
+			if (boardCells[y * width + x] == 2) // Poison
 			{
 				DrawCell({ x, y }, poisonColor);
+			}
+			else if (boardCells[y * width + x] == 3) // Obstacle
+			{
+				DrawCell({ x, y }, obstacleColor);
 			}
 		}
 	}

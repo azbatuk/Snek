@@ -26,7 +26,6 @@
 #include "Board.h"
 #include "Snake.h"
 #include "Goal.h"
-//#include "Obstacles.h"
 #include "Score.h"
 #include <random>
 
@@ -53,7 +52,6 @@ private:
 	Location delta_loc = { 1, 0 }; // Initial move by Snek. x is increasing, so from left to right.
 	std::mt19937 rng;
 	Goal goal;
-	//Obstacles obs;
 	Score score;
 	static constexpr int snekMovePeriodMin = 4; // Frames
 	int snekMovePeriod = 20; // Frames
