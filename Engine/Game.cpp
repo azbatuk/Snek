@@ -31,6 +31,7 @@ Game::Game( MainWindow& wnd )
 	snek({2 ,2}),
 	goal(rng, brd, snek)
 {
+	sndTitle.Play(1.0f, 1.0f);
 }
 
 void Game::Go()
@@ -74,6 +75,8 @@ void Game::UpdateModel()
 				if (!brd.IsInsideBoard(nextLoc) || snek.IsInTileExceptEnd(nextLoc) || brd.CheckForObstacle(nextLoc))
 				{
 					gameIsOver = true;
+					sndGameOver.Play(rng, 1.2f);
+					sndMusic.StopAll();
 				}
 				else
 				{
@@ -81,11 +84,14 @@ void Game::UpdateModel()
 					{
 						// eating poison
 						brd.EatPoison(nextLoc);
-
-						/* 
-						:azb:to do:
-						Increase Snek's speed when poison is eaten.
-						*/
+						sndEatPosion.Play(rng, 0.6f);
+						// increase Snek's speed by decreasing snekMovePeriod
+						poisonEatenCounter++;
+						if (poisonEatenCounter >= poisonSpeedUpPeriod)
+						{
+							poisonEatenCounter = 0;
+							snekMovePeriod = std::max(snekMovePeriod - 1, snekMovePeriodMin);
+						}
 					}
 
 					const bool eating = nextLoc == goal.GetLocation();
@@ -94,11 +100,13 @@ void Game::UpdateModel()
 						snek.Grow();
 					}
 					snek.MoveBy(delta_loc);
+					sfxSlither.Play(rng, 0.08f);
 					if (eating)
 					{
 						brd.AddObstacle(rng, snek);
 						goal.Respawn(rng, brd, snek);
 						score.AddScore();
+						sfxEat.Play(rng, 0.8f);
 					}
 				}
 			}
@@ -116,6 +124,10 @@ void Game::UpdateModel()
 	else
 	{
 		gameIsStarted = wnd.kbd.KeyIsPressed(VK_RETURN);
+		if (gameIsStarted)
+		{
+			sndMusic.Play(1.0f, 0.6f);
+		}
 	}
 }
 

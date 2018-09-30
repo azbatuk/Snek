@@ -27,6 +27,7 @@
 #include "Snake.h"
 #include "Goal.h"
 #include "Score.h"
+#include "SoundEffect.h"
 #include <random>
 
 class Game
@@ -53,9 +54,17 @@ private:
 	std::mt19937 rng;
 	Goal goal;
 	Score score;
+	SoundEffect sfxEat = SoundEffect({ L"Sounds\\Eat.wav" });
+	SoundEffect sfxSlither = SoundEffect({ L"Sounds\\Slither0.wav",L"Sounds\\Slither1.wav",L"Sounds\\Slither2.wav" });
+	Sound sndMusic = Sound(L"Sounds\\Music_Loop.wav", Sound::LoopType::AutoFullSound);
+	Sound sndTitle = Sound(L"Sounds\\Title.wav");
+	SoundEffect sndEatPosion = SoundEffect({ L"Sounds\\EatPoison.wav" });
+	SoundEffect sndGameOver = SoundEffect({ L"Sounds\\Fart.wav" });
 	static constexpr int snekMovePeriodMin = 4; // Frames
 	int snekMovePeriod = 20; // Frames
 	int snekMoveCounter = 0;
+	int poisonEatenCounter = 0;
+	static constexpr int poisonSpeedUpPeriod = 10; // No of poisons eaten that will speed Snek up
 	static constexpr int snekSpeedUpPeriod = 180; // Frames (60 frames/second * 3 seconds = 180)
 	int snekSpeedUpCounter = 0;
 	bool gameIsOver = false;
