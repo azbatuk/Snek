@@ -83,9 +83,11 @@ void Game::UpdateModel()
 					if (brd.CheckForPoison(nextLoc))
 					{
 						// eating poison
-						brd.EatPoison(nextLoc);
-						sndEatPosion.Play(rng, 0.6f);
+						brd.RemovePoison(nextLoc);
+						sndRemovePoison.Play(rng, 0.6f);
+
 						// increase Snek's speed by decreasing snekMovePeriod
+						// at intervals determined by "poisonSpeedUpPeriod"
 						poisonEatenCounter++;
 						if (poisonEatenCounter >= poisonSpeedUpPeriod)
 						{
@@ -94,10 +96,12 @@ void Game::UpdateModel()
 						}
 					}
 
-					const bool eating = nextLoc == goal.GetLocation();
+					const bool eating = brd.CheckForGoal(nextLoc);
+
 					if (eating)
 					{
 						snek.Grow();
+						brd.RemoveGoal(nextLoc);
 					}
 					snek.MoveBy(delta_loc);
 					sfxSlither.Play(rng, 0.08f);
@@ -135,11 +139,8 @@ void Game::ComposeFrame()
 {
 	if (gameIsStarted)
 	{
-		//brd.DrawPoison();
-		//brd.DrawObstacles();
 		brd.DrawBoard();
 		snek.Draw(brd);
-		goal.Draw(brd);
 		score.Draw(brd);
 
 		if (gameIsOver)
@@ -165,6 +166,4 @@ void Game::ComposeFrame()
 	//		brd.DrawCell(loc, c);
 	//	}
 	//}
-
-
 }

@@ -12,23 +12,14 @@ void Goal::Respawn(std::mt19937 & rng, Board & brd, const Snake & snake)
 
 	Location newLoc;
 
-	// Generate a random location, and keep re-generating 
-	// if it is occupied by Snake until you get one that is not occupied.
+	// Generate a random location. 
+	// And if it is occupied by Snake OR another Goal OR an Obstacle OR a Poison,
+	// then keep generating a new location until you get one that is not occupied.
 	do
 	{
 		newLoc.x = xDist(rng);
 		newLoc.y = yDist(rng);
-	} while (snake.IsInTile(newLoc) || brd.CheckForObstacle(newLoc) || brd.CheckForPoison(newLoc));
+	} while (snake.IsInTile(newLoc) || brd.CheckForGoal(newLoc) || brd.CheckForObstacle(newLoc) || brd.CheckForPoison(newLoc));
 
-	loc = newLoc;
-}
-
-void Goal::Draw(Board& brd) const
-{
-	brd.DrawCell(loc, c);
-}
-
-const Location & Goal::GetLocation() const
-{
-	return loc;
+	brd.AddGoal(newLoc);
 }

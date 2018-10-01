@@ -58,7 +58,7 @@ private:
 	SoundEffect sfxSlither = SoundEffect({ L"Sounds\\Slither0.wav",L"Sounds\\Slither1.wav",L"Sounds\\Slither2.wav" });
 	Sound sndMusic = Sound(L"Sounds\\Music_Loop.wav", Sound::LoopType::AutoFullSound);
 	Sound sndTitle = Sound(L"Sounds\\Title.wav");
-	SoundEffect sndEatPosion = SoundEffect({ L"Sounds\\EatPoison.wav" });
+	SoundEffect sndRemovePoison = SoundEffect({ L"Sounds\\EatPoison.wav" });
 	SoundEffect sndGameOver = SoundEffect({ L"Sounds\\Fart.wav" });
 	static constexpr int snekMovePeriodMin = 4; // Frames
 	int snekMovePeriod = 20; // Frames

@@ -13,12 +13,13 @@ public:
 	bool IsInsideBoard(const Location& loc) const;
 	void DrawBorder();
 	void DrawScore(const int x, const int y, const int scoreWidht, const int scoreHeight, const Color c);
-	bool CheckForObstacle(const Location& loc) const;
+	bool CheckForGoal(const Location& loc) const;
 	bool CheckForPoison(const Location& loc) const;
+	bool CheckForObstacle(const Location& loc) const;
+	void AddGoal(const Location& loc);
+	void RemoveGoal(const Location& loc);
+	void RemovePoison(const Location& loc);
 	void AddObstacle(std::mt19937 & rng, const class Snake & snake);
-	void EatPoison(const Location& loc);
-	void DrawObstacles();
-	void DrawPoison();
 	void DrawBoard();
 private:
 	static constexpr int cellDim = 20;		// Pixels
@@ -30,11 +31,12 @@ private:
 	static constexpr int topLeftX = 70;		// Pixels
 	static constexpr int topLeftY = 50;		// Pixels
 	static constexpr Color borderColor = Colors::Blue;
+	static constexpr Color goalColor = Colors::Red;
 	static constexpr Color obstacleColor = Colors::Gray;
 	static constexpr Color poisonColor = Color(58, 0, 58);
 	bool hasObstacle[width * height] = { false };
 	int boardCells[width * height] = { 0 }; // 0 = Empty, 1 = Goal, 2 = Poison, 3 = Obstacle
-	int nGoals = 10;
+	int nGoals = 5;
 	int nPoison = (width * height) / 3;
 	Graphics& gfx;
 };
