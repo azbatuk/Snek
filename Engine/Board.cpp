@@ -17,16 +17,33 @@ Board::Board(Graphics& in_gfx)
 	std::uniform_int_distribution<int> yDist(0, height - 1);
 
 	Location loc;
-	do {
+	int countInserts = 1;
+
+	// Initialize Poisons
+	while (countInserts < nPoison) {
 		loc.x = xDist(rng);
 		loc.y = yDist(rng);
 
 		if (boardCells[loc.y * width + loc.x] == 0) // if cell is empty
 		{
 			boardCells[loc.y * width + loc.x] = 2; // insert poison
-			nPoison--;
+			countInserts++;
 		}
-	} while (nPoison > 0);
+	};
+
+	countInserts = 1;
+
+	// Initialize Goals
+	while (countInserts < nGoals) {
+		loc.x = xDist(rng);
+		loc.y = yDist(rng);
+
+		if (boardCells[loc.y * width + loc.x] == 0) // if cell is empty
+		{
+			boardCells[loc.y * width + loc.x] = 1; // insert Goal
+			countInserts++;
+		}
+	};
 }
 
 void Board::DrawCell(const Location& loc, Color c)
@@ -89,16 +106,37 @@ void Board::DrawScore(const int x, const int y, const int scoreWidth, const int 
 	gfx.DrawRectDim(left, top, scoreWidth, scoreHeight, c);
 }
 
-bool Board::CheckForObstacle(const Location & loc) const
+bool Board::CheckForGoal(const Location & loc) const
 {
 	// Map 2D screen array to 1D hasObstacle array (Row Major) to get the correct array index
-	//return hasObstacle[loc.y * width + loc.x]; 
-	return boardCells[loc.y * width + loc.x] == 3; // 3 = Obstacle
+	return boardCells[loc.y * width + loc.x] == 1; // 1 = Goal
 }
 
 bool Board::CheckForPoison(const Location & loc) const
 {
+	// Map 2D screen array to 1D hasObstacle array (Row Major) to get the correct array index
 	return boardCells[loc.y * width + loc.x] == 2; // 2 = Poison
+}
+
+bool Board::CheckForObstacle(const Location & loc) const
+{
+	// Map 2D screen array to 1D hasObstacle array (Row Major) to get the correct array index
+	return boardCells[loc.y * width + loc.x] == 3; // 3 = Obstacle
+}
+
+void Board::AddGoal(const Location & loc)
+{
+	boardCells[loc.y * width + loc.x] = 1; // 1 = Goal
+}
+
+void Board::RemoveGoal(const Location & loc)
+{
+	boardCells[loc.y * width + loc.x] = 0; // 0 = Empty
+}
+
+void Board::RemovePoison(const Location & loc)
+{
+	boardCells[loc.y * width + loc.x] = 0; // 0 = Empty
 }
 
 void Board::AddObstacle(std::mt19937 & rng, const Snake & snake)
@@ -112,45 +150,9 @@ void Board::AddObstacle(std::mt19937 & rng, const Snake & snake)
 		newLoc.y = yDist(rng);
 
 	} while (CheckForObstacle(newLoc) || CheckForPoison(newLoc) || snake.IsInTile(newLoc));
-	//} while (CheckForObstacle(newLoc) || snake.IsInTile(newLoc));
 
-	// Map 2D screen array to 1D hasObstacle array (Row Major) to get the correct array index
-	//hasObstacle[newLoc.y * width + newLoc.x] = true;
 	boardCells[newLoc.y * width + newLoc.x] = 3; // 3 = Obstacle
 }
-
-void Board::EatPoison(const Location & loc)
-{
-	boardCells[loc.y * width + loc.x] = 0; // 0 = Empty
-}
-
-//void Board::DrawObstacles()
-//{
-//	for (int y = 0; y < height; y++)
-//	{
-//		for (int x = 0; x < width; x++)
-//		{
-//			if (CheckForObstacle({x, y}))
-//			{
-//				DrawCell({x, y}, obstacleColor);
-//			}
-//		}
-//	}
-//}
-//
-//void Board::DrawPoison()
-//{
-//	for (int y = 0; y < height; y++)
-//	{
-//		for (int x = 0; x < width; x++)
-//		{
-//			if (boardCells[y * width + x] == 2)
-//			{
-//				DrawCell({ x, y }, poisonColor);
-//			}
-//		}
-//	}
-//}
 
 void Board::DrawBoard()
 {
@@ -158,7 +160,11 @@ void Board::DrawBoard()
 	{
 		for (int x = 0; x < width; x++)
 		{
-			if (boardCells[y * width + x] == 2) // Poison
+			if (boardCells[y * width + x] == 1) // Goal
+			{
+				DrawCell({ x, y }, goalColor);
+			}
+			else if (boardCells[y * width + x] == 2) // Poison
 			{
 				DrawCell({ x, y }, poisonColor);
 			}
