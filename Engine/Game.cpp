@@ -100,7 +100,7 @@ void Game::UpdateModel()
 				if (!brd.IsInsideBoard(nextLoc) || snek.IsInTileExceptEnd(nextLoc) || brd.CheckForObstacle(nextLoc))
 				{
 					gameIsOver = true;
-					sndGameOver.Play(rng, 1.2f);
+					sndGameOver.Play(rng, 1.1f);
 					sndMusic.StopAll();
 				}
 				else
@@ -129,7 +129,7 @@ void Game::UpdateModel()
 						brd.RemoveGoal(nextLoc);
 					}
 					snek.MoveBy(delta_loc);
-					sfxSlither.Play(rng, 0.08f);
+					sfxSlither.Play(rng, 1.0f);
 					if (eating)
 					{
 						brd.SpawnItem(rng, snek, 1); // 1 = Goal
@@ -155,7 +155,7 @@ void Game::UpdateModel()
 		gameIsStarted = wnd.kbd.KeyIsPressed(VK_RETURN);
 		if (gameIsStarted)
 		{
-			sndMusic.Play(1.0f, 0.6f);
+			sndMusic.Play(1.0f, 0.4f);
 		}
 	}
 }
