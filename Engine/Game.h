@@ -67,8 +67,11 @@ private:
 	static constexpr int snekSpeedUpPeriod = 180; // Snek speed up interval: Frames (60 frames/second * 3 seconds = 180)
 	int poisonEatenCounter = 0;
 	static constexpr int poisonSpeedUpPeriod = 10; // No of poisons eaten that will speed Snek up
-	//int speedUpKeyCounter = 0;snekKeyPressedMovePeriod
 	static constexpr int snekKeyPressedMovePeriod = 5; // While Control Key is pressed: No of frames that will speed Snek up
+
+	static constexpr int nGoals = 5;
+	int nPoison = (brd.GetGridWidth() * brd.GetGridHeight()) / 3;
+
 	bool gameIsOver = false;
 	bool gameIsStarted = false;
 	/********************************/

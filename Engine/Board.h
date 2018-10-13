@@ -18,8 +18,7 @@ public:
 	bool CheckForObstacle(const Location& loc) const;
 	void RemoveGoal(const Location& loc);
 	void RemovePoison(const Location& loc);
-	void SpawnObstacle(std::mt19937 & rng, const class Snake & snake);
-	void SpawnGoal(std::mt19937 & rng, const class Snake & snake);
+	void SpawnItem(std::mt19937 & rng, const class Snake & snake, int itemType);
 	void DrawBoard();
 private:
 	static constexpr int cellDim = 20;		// Pixels
@@ -34,9 +33,6 @@ private:
 	static constexpr Color goalColor = Colors::Red;
 	static constexpr Color obstacleColor = Colors::Gray;
 	static constexpr Color poisonColor = Color(58, 0, 58);
-	bool hasObstacle[width * height] = { false };
 	int boardCells[width * height] = { 0 }; // 0 = Empty, 1 = Goal, 2 = Poison, 3 = Obstacle
-	int nGoals = 5;
-	int nPoison = (width * height) / 3;
 	Graphics& gfx;
 };

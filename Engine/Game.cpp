@@ -30,6 +30,18 @@ Game::Game( MainWindow& wnd )
 	rng(std::random_device()()),
 	snek({2 ,2})
 {
+	// Initialize Goals
+	for (int i = 0; i < nGoals; i++)
+	{
+		brd.SpawnItem(rng, snek, 1); // Goal
+	}
+
+	// Initialize Poisons
+	for (int i = 0; i < nPoison; i++)
+	{
+		brd.SpawnItem(rng, snek, 2); // Poison
+	}
+
 	sndTitle.Play(1.0f, 1.0f);
 }
 
@@ -120,9 +132,8 @@ void Game::UpdateModel()
 					sfxSlither.Play(rng, 0.08f);
 					if (eating)
 					{
-						brd.SpawnObstacle(rng, snek);
-						brd.SpawnGoal(rng, snek);
-						//goal.Respawn(rng, brd, snek);
+						brd.SpawnItem(rng, snek, 1); // 1 = Goal
+						brd.SpawnItem(rng, snek, 3); // 3 = Obstacle
 						score.AddScore();
 						sfxEat.Play(rng, 0.8f);
 					}

@@ -4,7 +4,7 @@
 /*
 Snake class is Forward Declared in Board.h to avoid 
 circular dependency since Snake.h is including Board.h
-As a result, Snake.h is being included here instead of Board.h
+As a result, Snake.h is being included here instead of in Board.h
 */
 #include "Snake.h"
 
@@ -12,38 +12,6 @@ Board::Board(Graphics& in_gfx)
 	:
 	gfx(in_gfx)
 {
-	std::mt19937 rng;
-	std::uniform_int_distribution<int> xDist(0, width - 1);
-	std::uniform_int_distribution<int> yDist(0, height - 1);
-
-	Location loc;
-	int countInserts = 1;
-
-	// Initialize Poisons
-	while (countInserts < nPoison) {
-		loc.x = xDist(rng);
-		loc.y = yDist(rng);
-
-		if (boardCells[loc.y * width + loc.x] == 0) // if cell is empty
-		{
-			boardCells[loc.y * width + loc.x] = 2; // insert poison
-			countInserts++;
-		}
-	};
-
-	countInserts = 1;
-
-	// Initialize Goals
-	while (countInserts < nGoals) {
-		loc.x = xDist(rng);
-		loc.y = yDist(rng);
-
-		if (boardCells[loc.y * width + loc.x] == 0) // if cell is empty
-		{
-			boardCells[loc.y * width + loc.x] = 1; // insert Goal
-			countInserts++;
-		}
-	};
 }
 
 void Board::DrawCell(const Location& loc, Color c)
@@ -108,19 +76,19 @@ void Board::DrawScore(const int x, const int y, const int scoreWidth, const int 
 
 bool Board::CheckForGoal(const Location & loc) const
 {
-	// Map 2D screen array to 1D hasObstacle array (Row Major) to get the correct array index
+	// Map 2D screen array to 1D boardCells array (Row Major) to get the correct array index
 	return boardCells[loc.y * width + loc.x] == 1; // 1 = Goal
 }
 
 bool Board::CheckForPoison(const Location & loc) const
 {
-	// Map 2D screen array to 1D hasObstacle array (Row Major) to get the correct array index
+	// Map 2D screen array to 1D boardCells array (Row Major) to get the correct array index
 	return boardCells[loc.y * width + loc.x] == 2; // 2 = Poison
 }
 
 bool Board::CheckForObstacle(const Location & loc) const
 {
-	// Map 2D screen array to 1D hasObstacle array (Row Major) to get the correct array index
+	// Map 2D screen array to 1D boardCells array (Row Major) to get the correct array index
 	return boardCells[loc.y * width + loc.x] == 3; // 3 = Obstacle
 }
 
@@ -134,7 +102,7 @@ void Board::RemovePoison(const Location & loc)
 	boardCells[loc.y * width + loc.x] = 0; // 0 = Empty
 }
 
-void Board::SpawnObstacle(std::mt19937 & rng, const Snake & snake)
+void Board::SpawnItem(std::mt19937 & rng, const Snake & snake, int itemType)
 {
 	std::uniform_int_distribution<int> xDist(0, width - 1);
 	std::uniform_int_distribution<int> yDist(0, height - 1);
@@ -146,22 +114,7 @@ void Board::SpawnObstacle(std::mt19937 & rng, const Snake & snake)
 
 	} while (snake.IsInTile(newLoc) || boardCells[newLoc.y * width + newLoc.x] != 0);
 
-	boardCells[newLoc.y * width + newLoc.x] = 3; // 3 = Obstacle
-}
-
-void Board::SpawnGoal(std::mt19937 & rng, const Snake & snake)
-{
-	std::uniform_int_distribution<int> xDist(0, width - 1);
-	std::uniform_int_distribution<int> yDist(0, height - 1);
-
-	Location newLoc;
-	do {
-		newLoc.x = xDist(rng);
-		newLoc.y = yDist(rng);
-
-	} while (snake.IsInTile(newLoc) || boardCells[newLoc.y * width + newLoc.x] != 0);
-
-	boardCells[newLoc.y * width + newLoc.x] = 1; // 1 = Goal
+	boardCells[newLoc.y * width + newLoc.x] = itemType; // 1 = Goal, 3 = Obstacle
 }
 
 void Board::DrawBoard()
