@@ -16,10 +16,10 @@ public:
 	bool CheckForGoal(const Location& loc) const;
 	bool CheckForPoison(const Location& loc) const;
 	bool CheckForObstacle(const Location& loc) const;
-	void AddGoal(const Location& loc);
 	void RemoveGoal(const Location& loc);
 	void RemovePoison(const Location& loc);
-	void AddObstacle(std::mt19937 & rng, const class Snake & snake);
+	void SpawnObstacle(std::mt19937 & rng, const class Snake & snake);
+	void SpawnGoal(std::mt19937 & rng, const class Snake & snake);
 	void DrawBoard();
 private:
 	static constexpr int cellDim = 20;		// Pixels

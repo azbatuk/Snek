@@ -25,7 +25,6 @@
 #include "Graphics.h"
 #include "Board.h"
 #include "Snake.h"
-#include "Goal.h"
 #include "Score.h"
 #include "SoundEffect.h"
 #include <random>
@@ -52,7 +51,6 @@ private:
 	Snake snek;
 	Location delta_loc = { 1, 0 }; // Initial move by Snek. x is increasing, so from left to right.
 	std::mt19937 rng;
-	Goal goal;
 	Score score;
 	SoundEffect sfxEat = SoundEffect({ L"Sounds\\Eat.wav" });
 	SoundEffect sfxSlither = SoundEffect({ L"Sounds\\Slither0.wav",L"Sounds\\Slither1.wav",L"Sounds\\Slither2.wav" });
@@ -61,12 +59,16 @@ private:
 	SoundEffect sndRemovePoison = SoundEffect({ L"Sounds\\EatPoison.wav" });
 	SoundEffect sndGameOver = SoundEffect({ L"Sounds\\Fart.wav" });
 	static constexpr int snekMovePeriodMin = 4; // Frames
-	int snekMovePeriod = 20; // Frames
 	int snekMoveCounter = 0;
+	int snekMovePeriod = 20; // Snek will move once every this many Frames. 
+							 // It will decrease (to speed Snek up) at "snekSpeedUpPeriod" intervals and 
+							 // also at every "poisonSpeedUpPeriod" number of poisons eaten.
+	int snekSpeedUpCounter = 0;
+	static constexpr int snekSpeedUpPeriod = 180; // Snek speed up interval: Frames (60 frames/second * 3 seconds = 180)
 	int poisonEatenCounter = 0;
 	static constexpr int poisonSpeedUpPeriod = 10; // No of poisons eaten that will speed Snek up
-	static constexpr int snekSpeedUpPeriod = 180; // Frames (60 frames/second * 3 seconds = 180)
-	int snekSpeedUpCounter = 0;
+	//int speedUpKeyCounter = 0;snekKeyPressedMovePeriod
+	static constexpr int snekKeyPressedMovePeriod = 5; // While Control Key is pressed: No of frames that will speed Snek up
 	bool gameIsOver = false;
 	bool gameIsStarted = false;
 	/********************************/

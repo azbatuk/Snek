@@ -124,11 +124,6 @@ bool Board::CheckForObstacle(const Location & loc) const
 	return boardCells[loc.y * width + loc.x] == 3; // 3 = Obstacle
 }
 
-void Board::AddGoal(const Location & loc)
-{
-	boardCells[loc.y * width + loc.x] = 1; // 1 = Goal
-}
-
 void Board::RemoveGoal(const Location & loc)
 {
 	boardCells[loc.y * width + loc.x] = 0; // 0 = Empty
@@ -139,7 +134,7 @@ void Board::RemovePoison(const Location & loc)
 	boardCells[loc.y * width + loc.x] = 0; // 0 = Empty
 }
 
-void Board::AddObstacle(std::mt19937 & rng, const Snake & snake)
+void Board::SpawnObstacle(std::mt19937 & rng, const Snake & snake)
 {
 	std::uniform_int_distribution<int> xDist(0, width - 1);
 	std::uniform_int_distribution<int> yDist(0, height - 1);
@@ -149,9 +144,24 @@ void Board::AddObstacle(std::mt19937 & rng, const Snake & snake)
 		newLoc.x = xDist(rng);
 		newLoc.y = yDist(rng);
 
-	} while (CheckForObstacle(newLoc) || CheckForPoison(newLoc) || snake.IsInTile(newLoc));
+	} while (snake.IsInTile(newLoc) || boardCells[newLoc.y * width + newLoc.x] != 0);
 
 	boardCells[newLoc.y * width + newLoc.x] = 3; // 3 = Obstacle
+}
+
+void Board::SpawnGoal(std::mt19937 & rng, const Snake & snake)
+{
+	std::uniform_int_distribution<int> xDist(0, width - 1);
+	std::uniform_int_distribution<int> yDist(0, height - 1);
+
+	Location newLoc;
+	do {
+		newLoc.x = xDist(rng);
+		newLoc.y = yDist(rng);
+
+	} while (snake.IsInTile(newLoc) || boardCells[newLoc.y * width + newLoc.x] != 0);
+
+	boardCells[newLoc.y * width + newLoc.x] = 1; // 1 = Goal
 }
 
 void Board::DrawBoard()

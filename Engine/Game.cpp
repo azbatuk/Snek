@@ -28,8 +28,7 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
 	brd(gfx),
 	rng(std::random_device()()),
-	snek({2 ,2}),
-	goal(rng, brd, snek)
+	snek({2 ,2})
 {
 	sndTitle.Play(1.0f, 1.0f);
 }
@@ -65,10 +64,24 @@ void Game::UpdateModel()
 				delta_loc = { 1, 0 };
 			}
 
-			// Update Snek at snekMovePeriod intervals
-			// to prevent it from moving too fast.
+			int snekModifiedMovePeriod = snekMovePeriod;
+			if (wnd.kbd.KeyIsPressed(VK_CONTROL))
+			{
+				// Increase Snek's speed when Control key is pressed.
+				// Snek will stop speeding up when key is released.
+
+				/* 
+				Using "min" to choose the smaller value, because eventually "snekMovePeriod" 
+				can become a value less than "snekKeyPressedMovePeriod" at which time 
+				pressing Control Key will actually slow down Snek if "snekKeyPressedMovePeriod"
+				is simply assigned to "snekModifiedMovePeriod".
+				*/
+				snekModifiedMovePeriod = std::min(snekMovePeriod, snekKeyPressedMovePeriod);
+			}
+
+			// Update Snek at snekMovePeriod intervals to control its' speed.
 			snekMoveCounter++;
-			if (snekMoveCounter >= snekMovePeriod)
+			if (snekMoveCounter >= snekModifiedMovePeriod)
 			{
 				snekMoveCounter = 0;
 				const Location nextLoc = snek.GetNextHeadLocation(delta_loc);
@@ -107,8 +120,9 @@ void Game::UpdateModel()
 					sfxSlither.Play(rng, 0.08f);
 					if (eating)
 					{
-						brd.AddObstacle(rng, snek);
-						goal.Respawn(rng, brd, snek);
+						brd.SpawnObstacle(rng, snek);
+						brd.SpawnGoal(rng, snek);
+						//goal.Respawn(rng, brd, snek);
 						score.AddScore();
 						sfxEat.Play(rng, 0.8f);
 					}
