@@ -21,6 +21,7 @@ public:
 	bool IsInsideBoard(const Location& loc) const;
 	void DrawBorder();
 	void DrawScore(const int x, const int y, const int scoreWidht, const int scoreHeight, const Color c);
+	CellContents GetCellContent(const Location& loc);
 	bool CheckForGoal(const Location& loc) const;
 	bool CheckForPoison(const Location& loc) const;
 	bool CheckForObstacle(const Location& loc) const;

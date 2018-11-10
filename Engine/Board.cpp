@@ -74,9 +74,14 @@ void Board::DrawScore(const int x, const int y, const int scoreWidth, const int 
 	gfx.DrawRectDim(left, top, scoreWidth, scoreHeight, c);
 }
 
-bool Board::CheckForGoal(const Location & loc) const
+Board::CellContents Board::GetCellContent(const Location & loc)
 {
 	// Map 2D screen array to 1D boardCells array (Row Major) to get the correct array index
+	return boardCells[loc.y * width + loc.x];
+}
+
+bool Board::CheckForGoal(const Location & loc) const
+{
 	return boardCells[loc.y * width + loc.x] == CellContents::Goal;
 }
 
@@ -120,17 +125,19 @@ void Board::DrawBoard()
 	{
 		for (int x = 0; x < width; x++)
 		{
-			if (boardCells[y * width + x] == CellContents::Goal)
+			const CellContents cellContent = GetCellContent( {x, y} );
+
+			switch (cellContent)
 			{
+			case CellContents::Goal:
 				DrawCell({ x, y }, goalColor);
-			}
-			else if (boardCells[y * width + x] == CellContents::Poison)
-			{
+				break;
+			case CellContents::Poison:
 				DrawCell({ x, y }, poisonColor);
-			}
-			else if (boardCells[y * width + x] == CellContents::Obstacle)
-			{
+				break;
+			case CellContents::Obstacle:
 				DrawCell({ x, y }, obstacleColor);
+				break;
 			}
 		}
 	}
