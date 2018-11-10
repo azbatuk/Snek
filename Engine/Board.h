@@ -6,6 +6,14 @@
 class Board
 {
 public:
+	enum class CellContents
+	{
+		Empty,
+		Goal,
+		Obstacle,
+		Poison
+	};
+public:
 	Board(Graphics& in_gfx);
 	void DrawCell(const Location& loc, Color c);
 	int GetGridWidth() const;
@@ -18,7 +26,7 @@ public:
 	bool CheckForObstacle(const Location& loc) const;
 	void RemoveGoal(const Location& loc);
 	void RemovePoison(const Location& loc);
-	void SpawnItem(std::mt19937 & rng, const class Snake & snake, int itemType);
+	void SpawnItem(std::mt19937 & rng, const class Snake & snake, CellContents cellType);
 	void DrawBoard();
 private:
 	static constexpr int cellDim = 20;		// Pixels
@@ -33,6 +41,6 @@ private:
 	static constexpr Color goalColor = Colors::Red;
 	static constexpr Color obstacleColor = Colors::Gray;
 	static constexpr Color poisonColor = Color(58, 0, 58);
-	int boardCells[width * height] = { 0 }; // 0 = Empty, 1 = Goal, 2 = Poison, 3 = Obstacle
+	CellContents boardCells[width * height] = { CellContents::Empty };
 	Graphics& gfx;
 };

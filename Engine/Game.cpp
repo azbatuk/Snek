@@ -33,13 +33,13 @@ Game::Game( MainWindow& wnd )
 	// Initialize Goals
 	for (int i = 0; i < nGoals; i++)
 	{
-		brd.SpawnItem(rng, snek, 1); // Goal
+		brd.SpawnItem(rng, snek, Board::CellContents::Goal);
 	}
 
 	// Initialize Poisons
 	for (int i = 0; i < nPoison; i++)
 	{
-		brd.SpawnItem(rng, snek, 2); // Poison
+		brd.SpawnItem(rng, snek, Board::CellContents::Poison);
 	}
 
 	sndTitle.Play(1.0f, 1.0f);
@@ -132,8 +132,8 @@ void Game::UpdateModel()
 					sfxSlither.Play(rng, 1.0f);
 					if (eating)
 					{
-						brd.SpawnItem(rng, snek, 1); // 1 = Goal
-						brd.SpawnItem(rng, snek, 3); // 3 = Obstacle
+						brd.SpawnItem(rng, snek, Board::CellContents::Goal);
+						brd.SpawnItem(rng, snek, Board::CellContents::Obstacle);
 						score.AddScore();
 						sfxEat.Play(rng, 0.8f);
 					}

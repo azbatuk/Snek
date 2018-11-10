@@ -77,32 +77,30 @@ void Board::DrawScore(const int x, const int y, const int scoreWidth, const int 
 bool Board::CheckForGoal(const Location & loc) const
 {
 	// Map 2D screen array to 1D boardCells array (Row Major) to get the correct array index
-	return boardCells[loc.y * width + loc.x] == 1; // 1 = Goal
+	return boardCells[loc.y * width + loc.x] == CellContents::Goal;
 }
 
 bool Board::CheckForPoison(const Location & loc) const
 {
-	// Map 2D screen array to 1D boardCells array (Row Major) to get the correct array index
-	return boardCells[loc.y * width + loc.x] == 2; // 2 = Poison
+	return boardCells[loc.y * width + loc.x] == CellContents::Poison;
 }
 
 bool Board::CheckForObstacle(const Location & loc) const
 {
-	// Map 2D screen array to 1D boardCells array (Row Major) to get the correct array index
-	return boardCells[loc.y * width + loc.x] == 3; // 3 = Obstacle
+	return boardCells[loc.y * width + loc.x] == CellContents::Obstacle;
 }
 
 void Board::RemoveGoal(const Location & loc)
 {
-	boardCells[loc.y * width + loc.x] = 0; // 0 = Empty
+	boardCells[loc.y * width + loc.x] = CellContents::Empty;
 }
 
 void Board::RemovePoison(const Location & loc)
 {
-	boardCells[loc.y * width + loc.x] = 0; // 0 = Empty
+	boardCells[loc.y * width + loc.x] = CellContents::Empty;
 }
 
-void Board::SpawnItem(std::mt19937 & rng, const Snake & snake, int itemType)
+void Board::SpawnItem(std::mt19937 & rng, const Snake & snake, CellContents cellType)
 {
 	std::uniform_int_distribution<int> xDist(0, width - 1);
 	std::uniform_int_distribution<int> yDist(0, height - 1);
@@ -111,10 +109,9 @@ void Board::SpawnItem(std::mt19937 & rng, const Snake & snake, int itemType)
 	do {
 		newLoc.x = xDist(rng);
 		newLoc.y = yDist(rng);
+	} while (snake.IsInTile(newLoc) || boardCells[newLoc.y * width + newLoc.x] != CellContents::Empty);
 
-	} while (snake.IsInTile(newLoc) || boardCells[newLoc.y * width + newLoc.x] != 0);
-
-	boardCells[newLoc.y * width + newLoc.x] = itemType; // 1 = Goal, 3 = Obstacle
+	boardCells[newLoc.y * width + newLoc.x] = cellType;
 }
 
 void Board::DrawBoard()
@@ -123,15 +120,15 @@ void Board::DrawBoard()
 	{
 		for (int x = 0; x < width; x++)
 		{
-			if (boardCells[y * width + x] == 1) // Goal
+			if (boardCells[y * width + x] == CellContents::Goal)
 			{
 				DrawCell({ x, y }, goalColor);
 			}
-			else if (boardCells[y * width + x] == 2) // Poison
+			else if (boardCells[y * width + x] == CellContents::Poison)
 			{
 				DrawCell({ x, y }, poisonColor);
 			}
-			else if (boardCells[y * width + x] == 3) // Obstacle
+			else if (boardCells[y * width + x] == CellContents::Obstacle)
 			{
 				DrawCell({ x, y }, obstacleColor);
 			}
